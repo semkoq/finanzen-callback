@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Zurück zur App</title>
+<style>
+  body{font-family:system-ui,sans-serif;background:#0f1419;color:#e6edf3;margin:0;padding:32px 20px;text-align:center}
+  a.btn{display:inline-block;margin-top:24px;padding:14px 28px;border-radius:12px;background:#2f81f7;color:#fff;text-decoration:none;font-size:18px}
+  p{max-width:420px;margin:12px auto;line-height:1.5;color:#9da7b3}
+</style>
+</head>
+<body>
+<h1>Freigabe erledigt</h1>
+<p id="msg">Du wirst zur App zurückgeleitet.</p>
+<a class="btn" id="open" href="de.semir.finanzen://callback">Zur Finanz-App</a>
+<p>Diese Seite speichert nichts und sendet nichts ab. Sie gibt nur die Rückmeldung der Bank an die App auf diesem Handy weiter.</p>
+<script>
+(function () {
+  var p = new URLSearchParams(location.search);
+  var out = new URLSearchParams();
+  ["code", "state", "error"].forEach(function (k) {
+    var v = p.get(k);
+    if (v) out.set(k, v);
+  });
+  var target = "de.semir.finanzen://callback" + (out.toString() ? "?" + out.toString() : "");
+  document.getElementById("open").href = target;
+  if (out.has("code") || out.has("error")) {
+    location.replace(target);
+    setTimeout(function () {
+      document.getElementById("msg").textContent = "Falls die App sich nicht öffnet, tippe unten auf den Knopf.";
+    }, 1500);
+  } else {
+    document.getElementById("msg").textContent = "Keine Rückmeldung der Bank erhalten.";
+  }
+})();
+</script>
+</body>
+</html>
